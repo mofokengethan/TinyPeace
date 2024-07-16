@@ -58,6 +58,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.tinypeace.ui.theme.TinyPeaceTheme
+import java.util.logging.Filter
 
 enum class MainScreenType {
     // Screens
@@ -175,15 +176,9 @@ fun MainAppScreen(navController: NavController) {
                     MainScreenType.FRIENDS -> FriendsHomeScreen(navController)
                     MainScreenType.SEARCH -> SearchHomeScreen(navController)
                     MainScreenType.PROFILE -> ProfileHomeScreen(navController)
-                    MainScreenType.SETTINGS -> {
-
-                    }
-                    MainScreenType.FRIEND_SETTINGS -> {
-
-                    }
-                    MainScreenType.FILTERS -> {
-
-                    }
+                    MainScreenType.SETTINGS -> SettingsHeaderScreen(navController)
+                    MainScreenType.FRIEND_SETTINGS -> FriendsHeaderScreen(navController)
+                    MainScreenType.FILTERS -> FilterHeaderScreen(navController)
                 }
             }
         }
@@ -271,16 +266,14 @@ fun PostCard(
 @Composable
 fun MainHomeScreen(navController: NavController) {
     Column {
-        PostCard(
-            postText = "This is a sample post with less than 140 characters.",
-            author = "John Doe",
-            city = "Syracuse",
-            state = "NY",
-            category = "Tech",
-            onLikeClicked = {},
-            onDislikeClicked = {},
-            onDownArrowClicked = {}
-        )
+        Button(
+            onClick = {
+                navController.navigate("homeScreen")
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Home Screen Screen")
+        }
     }
 }
 
@@ -297,8 +290,6 @@ fun FriendsHomeScreen(navController: NavController) {
         }
     }
 }
-
-
 @Composable
 fun SearchHomeScreen(navController: NavController) {
     Column {
@@ -312,7 +303,6 @@ fun SearchHomeScreen(navController: NavController) {
         }
     }
 }
-
 @Composable
 fun ProfileHomeScreen(navController: NavController) {
     Column {
@@ -326,15 +316,6 @@ fun ProfileHomeScreen(navController: NavController) {
         }
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-fun MainAppPreview() {
-    TinyPeaceTheme {
-        MainAppScreen(navController = rememberNavController())
-    }
-}
-
 @Composable
 fun FilterHeaderScreen(navController: NavController) {
     Column {
@@ -348,7 +329,6 @@ fun FilterHeaderScreen(navController: NavController) {
         }
     }
 }
-
 @Composable
 fun SettingsHeaderScreen(navController: NavController) {
     Column {
@@ -362,9 +342,6 @@ fun SettingsHeaderScreen(navController: NavController) {
         }
     }
 }
-
-
-
 @Composable
 fun FriendsHeaderScreen(navController: NavController) {
     Column {
@@ -376,5 +353,13 @@ fun FriendsHeaderScreen(navController: NavController) {
         ) {
             Text("Friends Screen")
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MainAppPreview() {
+    TinyPeaceTheme {
+        MainAppScreen(navController = rememberNavController())
     }
 }

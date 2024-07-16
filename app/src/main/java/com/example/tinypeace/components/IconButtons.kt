@@ -11,6 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
+import com.example.tinypeace.components.buttons.TinyPeaceButtons
+import com.example.tinypeace.components.buttons.enums.TinyPeaceButtonType
+import com.example.tinypeace.components.buttons.enums.TinyPeaceIconButtonStyleType
+import com.example.tinypeace.components.buttons.models.TinyPeaceBasicIconModel
+import com.example.tinypeace.components.buttons.models.TinyPeaceButtonInteractionModel
+import com.example.tinypeace.components.buttons.models.TinyPeaceSegmentedButtonModel
 
 @Composable
 fun IconButtonView() {
@@ -20,7 +26,7 @@ fun IconButtonView() {
                 action = {
 
                 },
-                buttonType = Material3ButtonType.IconButton,
+                buttonType = TinyPeaceButtonType.IconButton,
                 modifier = Modifier,
                 enable = true,
                 text = null,
@@ -30,7 +36,7 @@ fun IconButtonView() {
                     modifier = Modifier
                 ),
                 iconButton = TinyPeaceIconButtonModel(
-                    iconButtonColorType = TinyPeaceButtonStyleType.Filled,
+                    iconButtonColorType = TinyPeaceIconButtonStyleType.Filled,
                     iconButtonModifier = Modifier,
                 ),
                 segmentedButton = null,
@@ -42,7 +48,7 @@ fun IconButtonView() {
                 action = {
 
                 },
-                buttonType = Material3ButtonType.IconButton,
+                buttonType = TinyPeaceButtonType.IconButton,
                 modifier = Modifier,
                 enable = true,
                 text = null,
@@ -52,7 +58,7 @@ fun IconButtonView() {
                     modifier = Modifier
                 ),
                 iconButton = TinyPeaceIconButtonModel(
-                    iconButtonColorType = TinyPeaceButtonStyleType.Regular,
+                    iconButtonColorType = TinyPeaceIconButtonStyleType.Regular,
                     iconButtonModifier = Modifier,
                 ),
                 segmentedButton = null,
@@ -64,7 +70,7 @@ fun IconButtonView() {
                 action = {
 
                 },
-                buttonType = Material3ButtonType.IconButton,
+                buttonType = TinyPeaceButtonType.IconButton,
                 modifier = Modifier,
                 enable = true,
                 text = null,
@@ -74,7 +80,7 @@ fun IconButtonView() {
                     modifier = Modifier
                 ),
                 iconButton = TinyPeaceIconButtonModel(
-                    iconButtonColorType = TinyPeaceButtonStyleType.FilledTonal,
+                    iconButtonColorType = TinyPeaceIconButtonStyleType.FilledTonal,
                     iconButtonModifier = Modifier
                 ),
                 segmentedButton = null,
@@ -86,7 +92,7 @@ fun IconButtonView() {
                 action = {
 
                 },
-                buttonType = Material3ButtonType.IconButton,
+                buttonType = TinyPeaceButtonType.IconButton,
                 modifier = Modifier,
                 enable = true,
                 text = null,
@@ -96,7 +102,7 @@ fun IconButtonView() {
                     modifier = Modifier
                 ),
                 iconButton = TinyPeaceIconButtonModel(
-                    iconButtonColorType = TinyPeaceButtonStyleType.Outlined,
+                    iconButtonColorType = TinyPeaceIconButtonStyleType.Outlined,
                     iconButtonModifier = Modifier,
                 ),
                 segmentedButton = null,
@@ -107,21 +113,22 @@ fun IconButtonView() {
 }
 
 /**
- *  @param buttonType Material3ButtonType
+ *  @param T Generic for segmented button: use nullable if not using segmented button.
+ *  @param buttonType TinyPeaceButtonType
  *  @param enable Boolean
  *  @param iconButton TinyPeaceIconButtonModel?
- *  @param onPressInteraction TinyPeaceButtonInteraction?
+ *  @param onPressInteraction TinyPeaceButtonInteractionModel?
  * */
 class TinyPeaceButtonModel<T>(
     var action: () -> Unit,
-    var buttonType: Material3ButtonType,
+    var buttonType: TinyPeaceButtonType,
     var modifier: Modifier,
     var enable: Boolean,
     var text: TinyPeaceButtonTextModel?,
     var basicIcon: TinyPeaceBasicIconModel?,
     var iconButton: TinyPeaceIconButtonModel?,
     var segmentedButton: TinyPeaceSegmentedButtonModel<T>?,
-    var onPressInteraction: TinyPeaceButtonInteraction?
+    var onPressInteraction: TinyPeaceButtonInteractionModel?
 
 )
 
@@ -139,7 +146,7 @@ class TinyPeaceButtonTextModel(
 
 
 class TinyPeaceIconButtonModel(
-    var iconButtonColorType: TinyPeaceButtonStyleType,
+    var iconButtonColorType: TinyPeaceIconButtonStyleType,
     var iconButtonModifier: Modifier
 )
 
@@ -154,18 +161,18 @@ class TinyPeaceIconButtonModel(
  * @return IconButtonColors IconButtonDefaults colors
  */
 @Composable
-fun returnIconButtonColor(iconButtonColorType: TinyPeaceButtonStyleType): IconButtonColors {
+fun returnIconButtonColor(iconButtonColorType: TinyPeaceIconButtonStyleType): IconButtonColors {
     return when (iconButtonColorType) {
-        TinyPeaceButtonStyleType.Regular -> {
+        TinyPeaceIconButtonStyleType.Regular -> {
             IconButtonDefaults.iconButtonColors()
         }
-        TinyPeaceButtonStyleType.Filled-> {
+        TinyPeaceIconButtonStyleType.Filled-> {
             IconButtonDefaults.filledIconButtonColors()
         }
-        TinyPeaceButtonStyleType.Outlined -> {
+        TinyPeaceIconButtonStyleType.Outlined -> {
             IconButtonDefaults.outlinedIconButtonColors()
         }
-        TinyPeaceButtonStyleType.FilledTonal -> {
+        TinyPeaceIconButtonStyleType.FilledTonal -> {
             IconButtonDefaults.filledTonalIconButtonColors()
         }
     }

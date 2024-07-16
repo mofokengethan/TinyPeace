@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
@@ -21,7 +22,6 @@ import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.StarBorder
-import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -46,22 +46,17 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.tinypeace.R
-import com.example.tinypeace.components.Material3ButtonType
-import com.example.tinypeace.components.Material3SegmentedButtonType
-import com.example.tinypeace.components.TinyPeaceBasicIconModel
-import com.example.tinypeace.components.TinyPeaceButtonInteraction
 import com.example.tinypeace.components.TinyPeaceButtonModel
-import com.example.tinypeace.components.TinyPeaceButtonStyleType
 import com.example.tinypeace.components.TinyPeaceButtonTextModel
-import com.example.tinypeace.components.TinyPeaceButtons
+import com.example.tinypeace.components.buttons.TinyPeaceButtons
 import com.example.tinypeace.components.TinyPeaceIconButtonModel
-import com.example.tinypeace.components.TinyPeaceSegmentedButtonModel
+import com.example.tinypeace.components.buttons.enums.TinyPeaceButtonType
+import com.example.tinypeace.components.buttons.enums.TinyPeaceIconButtonStyleType
+import com.example.tinypeace.components.buttons.enums.TinyPeaceSegmentedButtonType
+import com.example.tinypeace.components.buttons.models.TinyPeaceBasicIconModel
+import com.example.tinypeace.components.buttons.models.TinyPeaceSegmentedButtonModel
 import com.example.tinypeace.ui.theme.TinyPeaceTheme
 import com.example.tinypeace.ui.theme.background
-import com.example.tinypeace.ui.theme.color1
-import com.example.tinypeace.ui.theme.color2
-import com.example.tinypeace.ui.theme.color3
-import com.example.tinypeace.ui.theme.color4
 
 val provider = GoogleFont.Provider(
     providerAuthority = "com.google.android.gms.fonts",
@@ -88,8 +83,14 @@ val montserratFamily = FontFamily(
 fun HomeScreen(navController: NavController) {
 
     val scrollState = rememberScrollState()
-    var email by remember { mutableStateOf("Email") }
-    var password by remember { mutableStateOf("Password") }
+    val componentViews = listOf(
+        "Buttons",
+        "Communications",
+        "Containers",
+        "Navigation",
+        "Selections",
+        "InputFields"
+    )
 
     Box(
         contentAlignment = Alignment.Center,
@@ -102,6 +103,37 @@ fun HomeScreen(navController: NavController) {
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
+
+            LazyRow {
+                componentViews.forEach { component ->
+                    item {
+                        TinyPeaceButtons(tinyPeaceButtonModel = TinyPeaceButtonModel<Nullable>(
+                            action = {
+                                navController.navigate("$component-screen")
+                            },
+                            buttonType = TinyPeaceButtonType.TextButton,
+                            modifier = Modifier,
+                            enable = true,
+                            text = TinyPeaceButtonTextModel(
+                                text = component,
+                                style = MaterialTheme.typography.bodySmall,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier,
+                                softWrap = true,
+                                maxLines = 1,
+                                minLines = 1,
+                                lineHeight = TextUnit.Unspecified,
+                                letterSpacing = TextUnit.Unspecified
+                            ),
+                             basicIcon = null,
+                             iconButton = null,
+                             segmentedButton = null,
+                             onPressInteraction = null
+                            )
+                        )
+                    }
+                }
+            }
 
             Text(
                 text = "TinyPeace",
@@ -122,74 +154,7 @@ fun HomeScreen(navController: NavController) {
 
             SegmentedButtonsView()
 
-            BasicTextField(
-                value = email,
-                textStyle = MaterialTheme.typography.bodyMedium,
-                onValueChange = { value ->
-                    email = value
-                },
-                modifier = Modifier
-                    .fillMaxWidth(1f)
-                    .background(color1)
-                    .padding(24.dp)
-            )
-
-            BasicTextField(
-                value = password,
-                textStyle = MaterialTheme.typography.bodyMedium,
-                onValueChange = { value ->
-                    password = value
-                },
-                modifier = Modifier
-                    .fillMaxWidth(1f)
-                    .background(color2)
-                    .padding(24.dp)
-            )
-
-            Text(
-                text = "Create Account",
-                textAlign = TextAlign.Start,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier
-                    .fillMaxWidth(1f)
-                    .background(color3)
-                    .padding(16.dp)
-                    .clickable {
-                        navController.navigate("createAccountScreen")
-                    }
-            )
-
-            Text(
-                text = "Login",
-                textAlign = TextAlign.Start,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier
-                    .fillMaxWidth(1f)
-                    .background(color4)
-                    .padding(16.dp)
-                    .clickable {
-                        navController.navigate("homeScreen")
-                    }
-            )
-
             Spacer(modifier = Modifier.height(16.dp))
-
-           Column(
-               verticalArrangement = Arrangement.Center,
-               horizontalAlignment = Alignment.CenterHorizontally,
-               modifier = Modifier.fillMaxWidth(1f)
-           ) {
-                Icon(
-                    Icons.Outlined.Info,
-                    "Info.Circle",
-                    Modifier
-                        .background(Color.Transparent)
-                        .clickable {
-                            navController.navigate("informationScreen")
-                        }
-                        .padding(24.dp)
-                )
-           }
 
         }
     }
@@ -208,8 +173,10 @@ fun ButtonView() {
     Row {
         TinyPeaceButtons(
             tinyPeaceButtonModel = TinyPeaceButtonModel<Nullable>(
-                action = {},
-                buttonType = Material3ButtonType.ExtendedFloatingActionButton,
+                action = {
+                    println("Extended Floating Action Button")
+                },
+                buttonType = TinyPeaceButtonType.ExtendedFloatingActionButton,
                 modifier = Modifier
                     .padding(12.dp),
                 enable = true,
@@ -229,9 +196,9 @@ fun ButtonView() {
         TinyPeaceButtons(
             tinyPeaceButtonModel = TinyPeaceButtonModel<Nullable>(
                 action = {
-
+                    println("Floating Action Button")
                 },
-                buttonType = Material3ButtonType.FloatingActionButton,
+                buttonType = TinyPeaceButtonType.FloatingActionButton,
                 modifier = Modifier
                     .padding(8.dp),
                 enable = true,
@@ -255,9 +222,9 @@ fun Button2View() {
     TinyPeaceButtons(
         tinyPeaceButtonModel = TinyPeaceButtonModel<Nullable>(
             action = {
-
+                println("Filled Button")
             },
-            buttonType = Material3ButtonType.FilledButton,
+            buttonType = TinyPeaceButtonType.FilledButton,
             modifier = Modifier
                 .padding(8.dp),
             enable = true,
@@ -282,9 +249,9 @@ fun Button2View() {
     TinyPeaceButtons(
         tinyPeaceButtonModel = TinyPeaceButtonModel<Nullable>(
             action = {
-
+                println("Filled Tonal Button")
             },
-            buttonType = Material3ButtonType.FilledTonalButton,
+            buttonType = TinyPeaceButtonType.FilledTonalButton,
             modifier = Modifier
                 .padding(8.dp),
             enable = true,
@@ -309,9 +276,9 @@ fun Button2View() {
     TinyPeaceButtons(
         tinyPeaceButtonModel = TinyPeaceButtonModel<Nullable>(
             action = {
-
+                println("Elevated Button")
             },
-            buttonType = Material3ButtonType.ElevatedButton,
+            buttonType = TinyPeaceButtonType.ElevatedButton,
             modifier = Modifier
                 .padding(8.dp),
             enable = true,
@@ -336,9 +303,9 @@ fun Button2View() {
     TinyPeaceButtons(
         tinyPeaceButtonModel = TinyPeaceButtonModel<Nullable>(
             action = {
-
+                println("Outlined Button")
             },
-            buttonType = Material3ButtonType.OutlinedButton,
+            buttonType = TinyPeaceButtonType.OutlinedButton,
             modifier = Modifier
                 .padding(8.dp),
             enable = true,
@@ -367,9 +334,9 @@ fun Button3View() {
         TinyPeaceButtons(
             tinyPeaceButtonModel = TinyPeaceButtonModel<Nullable>(
                 action = {
-
+                    println("Text Button")
                 },
-                buttonType = Material3ButtonType.TextButton,
+                buttonType = TinyPeaceButtonType.TextButton,
                 modifier = Modifier
                     .padding(8.dp),
                 enable = true,
@@ -397,10 +364,13 @@ fun Button3View() {
 fun SegmentedButtonsView (
 ) {
     val checkedList = remember { mutableStateListOf<Int>() }
+    val singleCheckList = remember { mutableStateListOf<Int>() }
     Column {
         TinyPeaceButtons(tinyPeaceButtonModel = TinyPeaceButtonModel<String> (
-            action = {},
-            buttonType = Material3ButtonType.SegmentedButton,
+            action = {
+                println("Segmented Button - Single Choice Segment")
+            },
+            buttonType = TinyPeaceButtonType.SegmentedButton,
             modifier = Modifier
                 .padding(8.dp),
             enable = true,
@@ -408,8 +378,8 @@ fun SegmentedButtonsView (
             basicIcon = null,
             iconButton = null,
             segmentedButton = TinyPeaceSegmentedButtonModel(
-                segmentedButtonType = Material3SegmentedButtonType.SingleChoiceSegmentedButton,
-                checkedList = checkedList,
+                segmentedButtonType = TinyPeaceSegmentedButtonType.SingleChoiceSegmentedButton,
+                checkedList = singleCheckList,
                 options = listOf("Favorites", "Trending", "Saved"),
                 icons =  listOf(
                     Icons.Filled.StarBorder,
@@ -421,8 +391,10 @@ fun SegmentedButtonsView (
         ))
 
         TinyPeaceButtons(tinyPeaceButtonModel = TinyPeaceButtonModel<String> (
-            action = {},
-            buttonType = Material3ButtonType.SegmentedButton,
+            action = {
+                println("Segmented Button - Multi Choice Segment")
+            },
+            buttonType = TinyPeaceButtonType.SegmentedButton,
             modifier = Modifier
                 .padding(8.dp),
             enable = true,
@@ -430,7 +402,7 @@ fun SegmentedButtonsView (
             basicIcon = null,
             iconButton = null,
             segmentedButton = TinyPeaceSegmentedButtonModel(
-                segmentedButtonType = Material3SegmentedButtonType.MultiChoiceSegmentedButton,
+                segmentedButtonType = TinyPeaceSegmentedButtonType.MultiChoiceSegmentedButton,
                 checkedList = checkedList,
                 options = listOf("Favorites", "Trending", "Saved"),
                 icons =  listOf(
@@ -449,8 +421,8 @@ fun IconButtonView() {
     Row {
         TinyPeaceButtons(
             tinyPeaceButtonModel = TinyPeaceButtonModel<Nullable>(
-                action = {},
-                buttonType = Material3ButtonType.IconButton,
+                action = { println("Icon Button - Filled") },
+                buttonType = TinyPeaceButtonType.IconButton,
                 modifier = Modifier
                     .padding(8.dp),
                 enable = true,
@@ -462,7 +434,7 @@ fun IconButtonView() {
                         .padding(8.dp)
                 ),
                 iconButton = TinyPeaceIconButtonModel(
-                    iconButtonColorType = TinyPeaceButtonStyleType.Filled,
+                    iconButtonColorType = TinyPeaceIconButtonStyleType.Filled,
                     iconButtonModifier = Modifier
                         .padding(8.dp)
                 ),
@@ -472,10 +444,8 @@ fun IconButtonView() {
         )
         TinyPeaceButtons(
             tinyPeaceButtonModel = TinyPeaceButtonModel<Nullable>(
-                action = {
-
-                },
-                buttonType = Material3ButtonType.IconButton,
+                action = { println("Icon Button - Regular") },
+                buttonType = TinyPeaceButtonType.IconButton,
                 modifier = Modifier
                     .padding(8.dp),
                 enable = true,
@@ -487,7 +457,7 @@ fun IconButtonView() {
                         .padding(8.dp)
                 ),
                 iconButton = TinyPeaceIconButtonModel(
-                    iconButtonColorType = TinyPeaceButtonStyleType.Regular,
+                    iconButtonColorType = TinyPeaceIconButtonStyleType.Regular,
                     iconButtonModifier = Modifier
                         .padding(8.dp)
                 ),
@@ -497,10 +467,8 @@ fun IconButtonView() {
         )
         TinyPeaceButtons(
             tinyPeaceButtonModel = TinyPeaceButtonModel<Nullable>(
-                action = {
-
-                },
-                buttonType = Material3ButtonType.IconButton,
+                action = { println("Icon Button - Filled Toned") },
+                buttonType = TinyPeaceButtonType.IconButton,
                 modifier = Modifier
                     .padding(8.dp),
                 enable = true,
@@ -512,7 +480,7 @@ fun IconButtonView() {
                         .padding(8.dp)
                 ),
                 iconButton = TinyPeaceIconButtonModel(
-                    iconButtonColorType = TinyPeaceButtonStyleType.FilledTonal,
+                    iconButtonColorType = TinyPeaceIconButtonStyleType.FilledTonal,
                     iconButtonModifier = Modifier
                         .padding(8.dp),
                 ),
@@ -522,10 +490,8 @@ fun IconButtonView() {
         )
         TinyPeaceButtons(
             tinyPeaceButtonModel = TinyPeaceButtonModel<Nullable>(
-                action = {
-
-                },
-                buttonType = Material3ButtonType.IconButton,
+                action = { println("Icon Button - Outlined") },
+                buttonType = TinyPeaceButtonType.IconButton,
                 modifier = Modifier
                     .padding(8.dp),
                 enable = true,
@@ -537,7 +503,7 @@ fun IconButtonView() {
                         .padding(8.dp)
                 ),
                 iconButton = TinyPeaceIconButtonModel(
-                    iconButtonColorType = TinyPeaceButtonStyleType.Outlined,
+                    iconButtonColorType = TinyPeaceIconButtonStyleType.Outlined,
                     iconButtonModifier = Modifier
                         .padding(8.dp)
                 ),
@@ -547,25 +513,3 @@ fun IconButtonView() {
         )
     }
 }
-
-/**
- *  @param buttonType Material3ButtonType
- *  @param enable Boolean
- *  @param iconButton TinyPeaceIconButtonModel?
- *  @param onPressInteraction TinyPeaceButtonInteraction?
- * */
-class TinyPeaceButtonModel(
-    var buttonType: Material3ButtonType,
-    var enable: Boolean,
-    var iconButton: TinyPeaceIconButtonModel?,
-    var onPressInteraction: TinyPeaceButtonInteraction?
-
-)
-
-class TinyPeaceIconButtonModel(
-    var iconButtonColorType: TinyPeaceButtonStyleType,
-    var iconButtonAction: (()->Unit),
-    var iconButtonModifier: Modifier,
-    var tpBasicIcon: TinyPeaceBasicIconModel
-)
-
