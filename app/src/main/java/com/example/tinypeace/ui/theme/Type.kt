@@ -5,8 +5,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.example.tinypeace.screens.dmSerifDisplay
-import com.example.tinypeace.screens.montserratFamily
+import com.example.tinypeace.TinyPeaceUI.homeScreen.dmSerifDisplay
+import com.example.tinypeace.TinyPeaceUI.homeScreen.montserratFamily
 
 // Set of Material typography styles to start with
 val Typography = Typography(
