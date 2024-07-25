@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.tinypeace.TinyPeaceUI.homeScreen.NavHostNavigationScreen
+import com.example.tinypeace.TinyPeaceUI.homeScreen.UIPreview
 import com.example.tinypeace.ui.theme.TinyPeaceTheme
 
 class MainActivity : ComponentActivity() {
@@ -14,7 +14,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-
+            UIPreview()
         }
     }
 }

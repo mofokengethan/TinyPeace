@@ -9,6 +9,7 @@ import androidx.compose.material3.SliderState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.tinypeace.TinyPeaceUI.tinyPeaceComposables.ActionModel
 import com.example.tinypeace.TinyPeaceUI.tinyPeaceComposables.TP_Action
 import com.example.tinypeace.TinyPeaceUI.tinyPeaceComposables.TinyPeaceSmallComponentEnum
 import com.example.tinypeace.TinyPeaceUI.tinyPeaceData.buttonData.models.TinyPeaceInteractionModel
@@ -21,48 +22,48 @@ fun ActionsView() {
     Column {
         Slider(state = SliderState(0f, 0, {}, 0f..1f))
 
-        TP_Action(
-            communicationType = TinyPeaceSmallComponentEnum.RadioButton,
+        TP_Action(model = ActionModel(
+            type = TinyPeaceSmallComponentEnum.RadioButton,
             isEnabled = true,
             modifier = Modifier,
-            switchIcon = null,
-            onPressInteraction = TinyPeaceInteractionModel(
+            hasSwitchIcon = null,
+            interaction = TinyPeaceInteractionModel(
                 tpOnClick = {}
-            )
+            ))
         )
-        TP_Action(
-            communicationType = TinyPeaceSmallComponentEnum.Checkbox,
+        TP_Action(model = ActionModel(
+            type = TinyPeaceSmallComponentEnum.Checkbox,
             isEnabled = true,
             modifier = Modifier,
-            switchIcon = null,
-            onPressInteraction = TinyPeaceInteractionModel(
+            hasSwitchIcon = null,
+            interaction = TinyPeaceInteractionModel(
                 tpOnCheckChange = {}
-            )
+            ))
         )
-        TP_Action(
-            communicationType = TinyPeaceSmallComponentEnum.Switch,
+        TP_Action(model = ActionModel(
+            type = TinyPeaceSmallComponentEnum.Switch,
             isEnabled = true,
             modifier = Modifier,
-            switchIcon = null,
-            onPressInteraction = TinyPeaceInteractionModel(
+            hasSwitchIcon = null,
+            interaction = TinyPeaceInteractionModel(
                 tpOnCheckChange = {}
-            )
+            ))
         )
-        TP_Action(
-            communicationType = TinyPeaceSmallComponentEnum.Switch,
+        TP_Action(model = ActionModel(
+            type = TinyPeaceSmallComponentEnum.Switch,
             isEnabled = true,
             modifier = Modifier,
-            switchIcon = IconViewModel(
+            hasSwitchIcon = Pair(true, IconViewModel(
                 IconModel(
                     showIcon = true,
                     isClickable = Pair(false, null),
                     imageVector = Icons.Outlined.Cookie,
                     modifier = Modifier
                 )
-            ),
-            onPressInteraction = TinyPeaceInteractionModel(
+            )),
+            interaction = TinyPeaceInteractionModel(
                 tpOnCheckChange = {}
-            )
+            ))
         )
     }
 }

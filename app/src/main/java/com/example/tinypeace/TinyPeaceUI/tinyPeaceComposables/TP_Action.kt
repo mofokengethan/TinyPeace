@@ -28,13 +28,17 @@ enum class TinyPeaceSmallComponentEnum {
     Checkbox
 }
 
+class ActionModel(
+    var type: TinyPeaceSmallComponentEnum,
+    var isEnabled: Boolean,
+    var modifier: Modifier,
+    var hasSwitchIcon: Pair<Boolean, IconViewModel>?,
+    var interaction: TinyPeaceInteractionModel?
+)
+
 @Composable
 fun TP_Action(
-    communicationType: TinyPeaceSmallComponentEnum,
-    isEnabled: Boolean,
-    modifier: Modifier,
-    switchIcon: IconViewModel?,
-    onPressInteraction: TinyPeaceInteractionModel?,
+    model: ActionModel
 ) {
     val checked by remember { mutableStateOf(true) }
     val interactionSource = remember { MutableInteractionSource() }
@@ -45,52 +49,33 @@ fun TP_Action(
             interactionSource.interactions.collect { interaction ->
                 when (interaction) {
                     /** When a user touches a button, the button generates Press interaction */
-                    /** When a user touches a button, the button generates Press interaction */
-                    /** When a user touches a button, the button generates Press interaction */
-                    /** When a user touches a button, the button generates Press interaction */
                     is PressInteraction.Press -> {
-                        onPressInteraction?.onPressInteraction?.invoke()
+                        model.interaction?.onPressInteraction?.invoke()
                     }
-                    /** If the user lifts their finger inside the button, it generates a Release interaction,
-                     * letting the button know that the click was finished */
-                    /** If the user lifts their finger inside the button, it generates a Release interaction,
-                     * letting the button know that the click was finished */
-                    /** If the user lifts their finger inside the button, it generates a Release interaction,
-                     * letting the button know that the click was finished */
                     /** If the user lifts their finger inside the button, it generates a Release interaction,
                      * letting the button know that the click was finished */
                     is PressInteraction.Release -> {
-                        onPressInteraction?.onReleaseInteraction?.invoke()
+                        model.interaction?.onReleaseInteraction?.invoke()
                     }
-                    /**
-                     * If the users drags their finger outside the button, then lifts their finger,
-                     * the button generates Cancel interaction, to indicate that the press was canceled */
-                    /**
-                     * If the users drags their finger outside the button, then lifts their finger,
-                     * the button generates Cancel interaction, to indicate that the press was canceled */
-                    /**
-                     * If the users drags their finger outside the button, then lifts their finger,
-                     * the button generates Cancel interaction, to indicate that the press was canceled */
                     /**
                      * If the users drags their finger outside the button, then lifts their finger,
                      * the button generates Cancel interaction, to indicate that the press was canceled */
                     is PressInteraction.Cancel -> {
-                        onPressInteraction?.onCancelInteraction?.invoke()
+                        model.interaction?.onCancelInteraction?.invoke()
                     }
                 }
             }
         }
     }
 
-    when (communicationType) {
+    when (model.type) {
         TinyPeaceSmallComponentEnum.Switch -> {
             // TODO - switch colors have check, unchecked, disabled-checked, disable-unchecked
-            // each can be modified to change thumb, track, border, and icon
             Switch(
                 checked = checked,
-                onCheckedChange = onPressInteraction?.tpOnCheckChange,
-                modifier = modifier,
-                enabled = isEnabled,
+                onCheckedChange = model.interaction?.tpOnCheckChange,
+                modifier = model.modifier,
+                enabled = model.isEnabled,
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = MaterialTheme.colorScheme.primary,
                     checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
@@ -98,8 +83,10 @@ fun TP_Action(
                     uncheckedTrackColor = MaterialTheme.colorScheme.secondaryContainer,
                 ),
                 thumbContent = {
-                    switchIcon?.let { viewModel: IconViewModel ->
-                        TP_Icon(viewModel = viewModel)
+                    model.hasSwitchIcon?.let { switchIcon ->
+                        if (switchIcon.first) {
+                            TP_Icon(viewModel = switchIcon.second)
+                        }
                     }
                 },
                 interactionSource = interactionSource
@@ -110,9 +97,9 @@ fun TP_Action(
             // TODO - radio button colors have unselected, selected, disabled-selected, and disabled-unselected
             RadioButton(
                 selected = checked,
-                onClick = onPressInteraction?.tpOnClick,
-                modifier = modifier,
-                enabled = isEnabled,
+                onClick = model.interaction?.tpOnClick,
+                modifier = model.modifier,
+                enabled = model.isEnabled,
                 colors = RadioButtonDefaults.colors(),
                 interactionSource = interactionSource
             )
@@ -120,12 +107,11 @@ fun TP_Action(
 
         TinyPeaceSmallComponentEnum.Checkbox -> {
             // TODO - checkbox colors have checked, unchecked, checkmark color, and disabled
-            // disabled consist of checked, unchecked, indeterminate
             Checkbox(
                 checked = checked,
-                onCheckedChange = onPressInteraction?.tpOnCheckChange,
-                modifier = modifier,
-                enabled = isEnabled,
+                onCheckedChange = model.interaction?.tpOnCheckChange,
+                modifier = model.modifier,
+                enabled = model.isEnabled,
                 colors = CheckboxDefaults.colors(),
                 interactionSource = interactionSource
             )
