@@ -25,7 +25,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
@@ -33,6 +35,7 @@ import androidx.compose.foundation.text2.input.TextObfuscationMode
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.AcUnit
 import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material.icons.outlined.AddReaction
@@ -50,6 +53,7 @@ import androidx.compose.material.icons.outlined.FlightLand
 import androidx.compose.material.icons.outlined.FlightTakeoff
 import androidx.compose.material.icons.outlined.LocationCity
 import androidx.compose.material.icons.outlined.Menu
+import androidx.compose.material.icons.outlined.Numbers
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.RealEstateAgent
 import androidx.compose.material.icons.outlined.Sailing
@@ -57,13 +61,16 @@ import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.ShoppingBag
 import androidx.compose.material.icons.outlined.Spa
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarDefaults.pinnedScrollBehavior
+import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -77,13 +84,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -91,6 +102,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.tinypeace.R
 import com.example.tinypeace.TinyPeaceUI.homeScreen.dmSerifDisplay
+import com.example.tinypeace.TinyPeaceUI.homeScreen.montserratFamily
 import com.example.tinypeace.TinyPeaceUI.tinyPeaceComposables.TP_Button
 import com.example.tinypeace.TinyPeaceUI.tinyPeaceComposables.TP_InputField
 import com.example.tinypeace.TinyPeaceUI.tinyPeaceData.buttonData.enums.TinyPeaceButtonType
@@ -110,247 +122,52 @@ import com.example.tinypeace.TinyPeaceUI.tinyPeaceData.inputFieldData.models.Tin
 import com.example.tinypeace.TinyPeaceUI.tinyPeaceData.inputFieldData.models.TinyPeaceKeyboardOptionsModel
 import com.example.tinypeace.TinyPeaceUI.tinyPeaceData.inputFieldData.models.TinyPeaceSearchInputModel
 import com.example.tinypeace.TinyPeaceUI.tinyPeaceViews.TP_AppBar
+import com.example.tinypeace.screens.viewOne.data.BackgroundImageVM
+import com.example.tinypeace.screens.viewOne.data.ViewOneViewType
+import com.example.tinypeace.screens.viewOne.data.airportHotelsList
+import com.example.tinypeace.screens.viewOne.data.artCollectiblesList
+import com.example.tinypeace.screens.viewOne.data.artCollectiblesSubMenuList
+import com.example.tinypeace.screens.viewOne.data.automobilesList
+import com.example.tinypeace.screens.viewOne.data.cityHotelsResortsList
+import com.example.tinypeace.screens.viewOne.data.fashionList
+import com.example.tinypeace.screens.viewOne.data.fashionSubMenuList
+import com.example.tinypeace.screens.viewOne.data.headerIcons
+import com.example.tinypeace.screens.viewOne.data.internationalAirportsList
+import com.example.tinypeace.screens.viewOne.data.menuList
+import com.example.tinypeace.screens.viewOne.data.realEstateList
+import com.example.tinypeace.screens.viewOne.data.spaWellnessRetreatsList
+import com.example.tinypeace.screens.viewOne.data.summerHotelsResortsList
+import com.example.tinypeace.screens.viewOne.data.watchesJewelryList
+import com.example.tinypeace.screens.viewOne.data.winterHotelsResortsList
+import com.example.tinypeace.screens.viewOne.data.yachtingBoatingList
+import com.example.tinypeace.screens.viewOne.data.yachtingClubsMarianasList
+import com.example.tinypeace.screens.viewOne.views.BackgroundImage
+import com.example.tinypeace.screens.viewOne.views.ViewOneCard
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-private val fashionList = listOf(
-    Pair("Armani", R.drawable.backgroundarmani),
-    Pair("Balenciaga", R.drawable.backgroundbalenciaga),
-    Pair("Bottega", R.drawable.backgroundbottega),
-    Pair("Chanel", R.drawable.backgroundchanel),
-    Pair("Burberry", R.drawable.backgroundburberry),
-    Pair("Dior", R.drawable.backgrounddior),
-    Pair("Fendi", R.drawable.backgroundfendi),
-    Pair("Givenchy", R.drawable.backgroundgivenchy),
-    Pair("Gucci", R.drawable.backgroundgucci),
-    Pair("Hermes", R.drawable.backgroundhermes),
-    Pair("Loewe", R.drawable.backgroundloewe),
-    Pair("Louis Vuitton", R.drawable.backgroundlouisvuitton),
-    Pair("Prada", R.drawable.backgroundprada),
-    Pair("YSL", R.drawable.backgroundysl)
-)
-
-private val watchesJewelryList = listOf(
-    Pair("Bulgari", R.drawable.backgroundbvlgari),
-    Pair("Cartier", R.drawable.backgroundcartier),
-    Pair("Rolex", R.drawable.backgroundrolex),
-    Pair("Van Cleef", R.drawable.backgroundvancleef)
-)
-
-private val automobilesList = listOf(
-    Pair("Cars", 0)
-)
-
-private val artCollectiblesList = listOf(
-    Pair("Art", R.drawable.backgroundysl)
-)
-
-private val internationalAirportsList = listOf(
-    Pair("INt Air", R.drawable.backgroundysl)
-)
-
-private val airportHotelsList = listOf(
-    Pair("Air Hotel", R.drawable.backgroundysl)
-)
-
-private val cityHotelsResortsList = listOf(
-    Pair("city hotl", R.drawable.backgroundysl)
-)
-
-private val summerHotelsResortsList = listOf(
-    Pair("summer htl", R.drawable.backgroundysl)
-)
-
-private val winterHotelsResortsList = listOf(
-    Pair("wintr htl", R.drawable.backgroundysl)
-)
-
-private val yachtingBoatingList = listOf(
-    Pair("ybt", R.drawable.backgroundysl)
-)
-
-private val yachtingClubsMarianasList = listOf(
-    Pair("ybt clubmar", R.drawable.backgroundysl)
-)
-
-private val spaWellnessRetreatsList = listOf(
-    Pair("spawell", R.drawable.backgroundysl)
-)
-
-private val realEstateList = listOf(
-    Pair("rlest", R.drawable.backgroundysl)
-)
-
-class BackgroundImageVM : ViewModel() {
-
-    private val _brandsList = MutableStateFlow(fashionList)
-    val brandsList: StateFlow<List<Pair<String, Int>>> get() = _brandsList
-
-    fun selectBrand(selectedBrand: Pair<String, Int>) {
-        _brandsList.value = _brandsList.value
-            .filter { it != selectedBrand }
-            .toMutableList()
-            .apply { add(0, selectedBrand) }
-    }
-
-    fun changeBrandList(searchText: String) {
-        when (searchText) {
-            Icons.Outlined.Menu.name -> {
-
-            } // Side Menu
-
-            Icons.Outlined.ShoppingBag.name -> {
-                _brandsList.value = fashionList
-            } // Fashion and Accessories
-
-            Icons.Outlined.Diamond.name  -> {
-                _brandsList.value = watchesJewelryList
-            } // Watches and Jewelry
-
-            Icons.Outlined.DirectionsCar.name -> {
-                _brandsList.value = automobilesList
-            } // Automobiles
-
-            Icons.Outlined.Palette.name -> {
-                _brandsList.value = artCollectiblesList
-            } // Art & Collectibles
-
-            Icons.Outlined.FlightTakeoff.name -> {
-                _brandsList.value = internationalAirportsList
-            } // International Airports
-
-            Icons.Outlined.FlightLand.name -> {
-                _brandsList.value = airportHotelsList
-            } // Airport Hotels
-
-            Icons.Outlined.LocationCity.name -> {
-                _brandsList.value = cityHotelsResortsList
-            } // City Hotels and Resorts
-
-            Icons.Outlined.BeachAccess.name -> {
-                _brandsList.value = summerHotelsResortsList
-            } // Summer Hotels and Resorts
-
-            Icons.Outlined.AcUnit.name -> {
-                _brandsList.value = winterHotelsResortsList
-            } // Winter Hotels and Resorts
-
-            Icons.Outlined.DirectionsBoat.name -> {
-                _brandsList.value = yachtingBoatingList
-            } // Yachting and Boating
-
-            Icons.Outlined.Sailing.name -> {
-                _brandsList.value = yachtingClubsMarianasList
-            } // Yacht Clubs and Marianas
-
-            Icons.Outlined.Spa.name -> {
-                _brandsList.value = spaWellnessRetreatsList
-            } // Spas and Wellness Retreat
-
-            Icons.Outlined.RealEstateAgent.name -> {
-                _brandsList.value = realEstateList
-            } // Real Estate
-        }
-    }
-}
-
-@Composable
-fun BackgroundImage(drawableId: Int) {
-    Image(
-        painter = painterResource(id = drawableId),
-        contentDescription = "drawableId: $drawableId",
-        contentScale = ContentScale.FillBounds,
-        alpha = 0.18f,
-        modifier = Modifier
-            .padding(8.dp)
-            .border(BorderStroke(1.6.dp, Color.Black))
-            .fillMaxWidth(1f)
-            .height(400.dp)
-            .background(color = Color.Black)
-    )
-}
-
-@Composable
-fun BackgroundScreen(content: @Composable () -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize(1f)
-            .padding(8.dp)
-            .background(Color.White)
-    ) {
-        content()
-    }
-}
-
-@Composable
-fun ViewOneCard(fashionBrand: Pair<String, Int>, viewFashionBrandButton: (Pair<String, Int>) -> Unit) {
-
-    Column(
-        verticalArrangement = Arrangement.Bottom,
-        modifier = Modifier
-            .padding(24.dp)
-            .fillMaxWidth(1f)
-            .height(420.dp)
-    ) {
-        Text(fashionBrand.first,
-            fontFamily = dmSerifDisplay,
-            style = MaterialTheme.typography.displayLarge, color = Color.White)
-        TP_Button(
-            tinyPeaceButtonModel = TinyPeaceButtonModel<Nullable>(
-                action = {
-                    viewFashionBrandButton(fashionBrand)
-                },
-                buttonType = TinyPeaceButtonType.FilledButton,
-                modifier = Modifier,
-                enable = true,
-                text = TinyPeaceButtonTextModel(
-                    text = "View ${fashionBrand.first}",
-                    style = MaterialTheme.typography.bodySmall,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier,
-                    softWrap = true,
-                    maxLines = Int.MAX_VALUE,
-                    minLines = 1,
-                    lineHeight = TextUnit.Unspecified,
-                    letterSpacing = 2.sp,
-                ),
-                basicIcon = null,
-                iconButton = null,
-                segmentedButton = null,
-                onPressInteraction = null
-            )
-        )
-    }
-}
 
 @Composable
 fun ViewOne(vm: BackgroundImageVM = viewModel()) {
     // Collecting the state flow from the view model
     val fashionBrandsList by vm.brandsList.collectAsState()
-    val list = listOf(
-        Icons.Outlined.Menu, // Fashion and Accessories
-        Icons.Outlined.FlightLand, // Fashion and Accessories
-        Icons.Outlined.Diamond, // Watches and Jewelry
-        Icons.Outlined.DirectionsCar, // Automobiles
-        Icons.Outlined.Palette, // Art & Collectibles
-        Icons.Outlined.FlightTakeoff, // International Airports
-        Icons.Outlined.FlightLand, // Airport Hotels
-        Icons.Outlined.LocationCity, // City Hotels and Resorts
-        Icons.Outlined.BeachAccess, // Summer Hotels and Resorts
-        Icons.Outlined.AcUnit, // Winter Hotels and Resorts
-        Icons.Outlined.DirectionsBoat, // Yachting and Boating
-        Icons.Outlined.Sailing, // Yacht Clubs and Marianas
-        Icons.Outlined.Spa, // Spas and Wellness
-        Icons.Outlined.RealEstateAgent, // Real Estate
-    )
+    val menuList by vm.mainMenuList.collectAsState()
+    val showSubMenList by vm.showingSubMenusList.collectAsState()
+    val showingDrawerSheet by vm.showingDrawerSheet.collectAsState()
     val scrollState = rememberScrollState()
+    val lazyScrollState = rememberLazyListState()
     val scrollState2 = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
 
-    BackgroundScreen {
+    Box(modifier = Modifier
+        .fillMaxSize(1f)
+        .padding(12.dp)
+        .background(Color.White)
+    ) {
+        // Brand Cards
         Column(
             modifier = Modifier
                 .padding(4.dp)
@@ -361,9 +178,9 @@ fun ViewOne(vm: BackgroundImageVM = viewModel()) {
                 Box {
                     BackgroundImage(drawableId = fashionBrand.second)
                     ViewOneCard(fashionBrand = fashionBrand) { selectedFashionBrand: Pair<String, Int> ->
-                        vm.selectBrand(selectedFashionBrand)
-                        coroutineScope.launch {
-                            scrollState.animateScrollTo(0,
+                        vm.selectBrand(type = ViewOneViewType.MainView, selectedFashionBrand)
+                        coroutineScope.launch { // use to not break main thread
+                            scrollState.animateScrollTo(0, // Scroll to top of screen
                                 animationSpec = tween(durationMillis = 3000) // Adjust duration here
                             )
                         }
@@ -371,34 +188,222 @@ fun ViewOne(vm: BackgroundImageVM = viewModel()) {
                 }
             }
         }
-        Row(modifier = Modifier.horizontalScroll(scrollState2)) {
-            list.forEach { icon ->
-                TP_Button(
-                    tinyPeaceButtonModel = TinyPeaceButtonModel<Nullable>(
-                        action = {
-                            vm.changeBrandList(icon.name)
-                        },
-                        buttonType = TinyPeaceButtonType.IconButton,
-                        modifier = Modifier
-                            .shadow(ambientColor = Color.White, spotColor = Color.White, elevation = 12.dp),
-                        enable = true,
-                        text = null,
-                        basicIcon = TinyPeaceBasicIconModel(
-                            imageVector = icon,
-                            description = icon.name,
+
+        // Header Icons
+        if (!showingDrawerSheet) {
+            Row(modifier = Modifier.horizontalScroll(scrollState2)) {
+                headerIcons.forEach { icon ->
+                    TP_Button(
+                        tinyPeaceButtonModel = TinyPeaceButtonModel<Nullable>(
+                            action = {
+                                if (icon == Icons.Outlined.Menu) {
+                                    vm.showDrawSheet()
+                                    return@TinyPeaceButtonModel
+                                }
+                                vm.changeBrandList(icon.name)
+                            },
+                            buttonType = TinyPeaceButtonType.IconButton,
                             modifier = Modifier
-                                .padding(horizontal = 12.dp)
-                        ),
-                        iconButton = TinyPeaceIconButtonModel(
-                            iconButtonColorType = TinyPeaceIconButtonStyleType.FilledTonal,
-                            iconButtonModifier = Modifier
-                                .padding(end = 20.dp),
-                        ),
-                        segmentedButton = null,
-                        onPressInteraction = null
+                                .shadow(ambientColor = Color.White, spotColor = Color.White, elevation = 12.dp),
+                            enable = true,
+                            text = null,
+                            basicIcon = TinyPeaceBasicIconModel(
+                                imageVector = icon,
+                                description = icon.name,
+                                modifier = Modifier
+                                    .padding(horizontal = 12.dp)
+                            ),
+                            iconButton = TinyPeaceIconButtonModel(
+                                iconButtonColorType = TinyPeaceIconButtonStyleType.FilledTonal,
+                                iconButtonModifier = Modifier
+                                    .padding(end = 20.dp),
+                            ),
+                            segmentedButton = null,
+                            onPressInteraction = null
+                        )
                     )
-                )
+                }
+            }
+        }
+
+        // Side Menu
+        if (showingDrawerSheet) {
+            ModalDrawerSheet(
+                modifier = Modifier
+                    .fillMaxWidth(1f),
+                drawerContainerColor = Color.White
+            ) {
+                Box(
+                    modifier = Modifier.padding(start = 10.dp)
+                ) {
+
+                    Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start, modifier = Modifier.padding(top = 0.dp)) {
+                        Row(
+                            modifier = Modifier,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            MainHeaderText("Menu", Color.Black)
+                            Spacer(modifier = Modifier.fillMaxWidth(0.75f))
+                            TP_Button(
+                                tinyPeaceButtonModel = TinyPeaceButtonModel<Nullable>(
+                                    action = {
+                                        vm.showDrawSheet()
+                                    },
+                                    buttonType = TinyPeaceButtonType.IconButton,
+                                    modifier = Modifier
+                                        .size(24.dp)
+                                        .shadow(
+                                            ambientColor = Color.White,
+                                            spotColor = Color.White,
+                                            elevation = 12.dp
+                                        ),
+                                    enable = true,
+                                    text = null,
+                                    basicIcon = TinyPeaceBasicIconModel(
+                                        imageVector = Icons.Default.Close,
+                                        description = Icons.Default.Close.name,
+                                        modifier = Modifier
+                                    ),
+                                    iconButton = TinyPeaceIconButtonModel(
+                                        iconButtonColorType = TinyPeaceIconButtonStyleType.FilledTonal,
+                                        iconButtonModifier = Modifier
+                                            .size(30.dp),
+                                    ),
+                                    segmentedButton = null,
+                                    onPressInteraction = null
+                                )
+                            )
+                        }
+                        LazyColumn(
+                            modifier = Modifier.fillMaxHeight(0.9f),
+                            state = lazyScrollState
+                        ) {
+                            menuList.forEach { pair: Pair<String, ImageVector> ->
+                                item {
+                                    ViewOneMenuCard(
+                                        title = pair.first,
+                                        icon = pair.second,
+                                        showSubMenuList = showSubMenList.first,
+                                        selectedTitle = showSubMenList.second
+                                    ) {
+                                        // filter title
+                                        vm.selectBrand(ViewOneViewType.MenuView, pair)
+                                        coroutineScope.launch { // use to not break main thread
+                                            lazyScrollState.animateScrollToItem(0) // Scroll to top of screen
+                                        }
+                                        // show sublist
+                                        vm.showSubMenuList(!showSubMenList.first, pair.first)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
+}
+
+
+@Composable
+fun ViewOneMenuCard(
+    title: String,
+    icon: ImageVector,
+    showSubMenuList: Boolean,
+    selectedTitle: String,
+    action: ()-> Unit
+) {
+    Row(
+        modifier = Modifier
+            .clickable(onClick = action)
+            .fillMaxWidth(1f)
+            .padding(vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start
+    ) {
+        Image(
+            modifier = Modifier.padding(end = 8.dp),
+            imageVector = icon,
+            contentDescription = icon.name,
+        )
+        Text(title, fontFamily = montserratFamily, fontWeight = FontWeight.Light, fontSize = 15.sp)
+    }
+    if (showSubMenuList && selectedTitle == title) {
+        when (selectedTitle) {
+                "Fashion and Accessories" -> {
+                    fashionSubMenuList.forEach { fashionBrandTitle: String ->
+                        Text(fashionBrandTitle, style = MaterialTheme.typography.bodyMedium, fontFamily = FontFamily.Serif, modifier = Modifier.padding( start = 8.dp, top = 16.dp))
+                        HorizontalDivider(modifier = Modifier.padding(vertical = 2.dp))
+                    }
+                    return
+                }
+                "Watches and Jewelry" -> {
+
+                }
+                "Automobiles" -> {
+                    artCollectiblesSubMenuList.forEach { carBrand: String ->
+                        Text(carBrand, style = MaterialTheme.typography.bodySmall, fontFamily = FontFamily.Serif)
+                    }
+                }
+                "Art & Collectibles" -> {
+                    if (selectedTitle != "0") return
+                    artCollectiblesSubMenuList.forEach { collector: String ->
+                        Text(collector, style = MaterialTheme.typography.bodySmall, fontFamily = FontFamily.Serif)
+                    }
+                }
+                "International Airports" -> {
+
+                }
+                "Airport Hotels" -> {
+
+                }
+                "City Hotels and Resorts" -> {
+
+                }
+                "Summer Hotels and Resorts" -> {
+
+                }
+                 "Winter Hotels and Resorts" -> {
+
+                 }
+                "Yachting and Boats" -> {
+
+                }
+                "Yacht Clubs and Marianas" -> {
+
+                }
+                "Spas and Wellness" -> {
+
+                }
+                "Real Estate" -> {
+
+                }
+                "Popular Locations" -> {
+
+                }
+                else -> return
+        }
+    }
+}
+
+@Composable
+fun MainHeaderText(
+    text: String,
+    color: Color
+) {
+    Text(text,
+        fontFamily = dmSerifDisplay,
+        style = MaterialTheme.typography.displayLarge,
+        color = color)
+}
+
+@Composable
+fun ViewOneDrawerSheet() {
+
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ViewOnePreview() {
+    ViewOne()
 }
