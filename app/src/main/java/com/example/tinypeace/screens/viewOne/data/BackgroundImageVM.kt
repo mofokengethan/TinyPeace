@@ -25,23 +25,80 @@ enum class ViewOneViewType {
     MenuView
 }
 
+
+
+// header icons for main view
+val headerIcons = listOf(
+    "🎭", // Entertainment
+    "🎨", // Activities
+    "⚽", // Sports
+    "✈️", // Airports
+    "🎓", // College Majors
+    "🏠", // Households
+    "❤️", // Relationships
+    "♈",// Zodiac Signs
+    "💰", // Income Levels
+    "📚" // Education Levels
+)
+
+// menu list for side menu
+// - does not include menu icon
+
+val menuList = listOf(
+    Pair("Entertainment", "🎭"),
+    Pair("Activities", "🎨"),
+    Pair("Sports", "⚽"),
+    Pair("Airports", "✈️"),
+    Pair("College Majors", "🎓"),
+    Pair("Households", "🏠"),
+    Pair("Relationships", "❤️"),
+    Pair("Zodiac Signs", "♈"),
+    Pair("Income", "💰"),
+    Pair("Education", "📚")
+)
+
 class BackgroundImageVM : ViewModel() {
 
-    private val _brandsList = MutableStateFlow(fashionList)
-    val brandsList: StateFlow<List<Pair<String, Int>>> get() = _brandsList
+    private val _headerIconsList = MutableStateFlow(headerIcons)
+    val headerIconsList: StateFlow<List<String>> get() = _headerIconsList
 
     private val _mainMenuList = MutableStateFlow(menuList)
-    val mainMenuList: StateFlow<List<Pair<String, ImageVector>>> get() = _mainMenuList
+    val mainMenuList: StateFlow<List<Pair<String, String>>> get() = _mainMenuList
 
-    private val _showingDrawerSheet = MutableStateFlow(true)
+    private val _showingDrawerSheet = MutableStateFlow(false)
     val showingDrawerSheet: StateFlow<Boolean> = _showingDrawerSheet
 
     private val _showingSubMenusList = MutableStateFlow(Pair(false, ""))
     val showingSubMenusList: StateFlow<Pair<Boolean, String>> = _showingSubMenusList
 
-    fun showSubMenuList(showList: Boolean, listTitle: String) {
-        val newSubMenuList = Pair(showList, listTitle)
-        _showingSubMenusList.value = newSubMenuList
+    fun closeSubMenuList() {
+        if (showingSubMenusList.value.first == true) {
+            val newSubMenu = Pair(false, showingSubMenusList.value.second)
+            _showingSubMenusList.value = newSubMenu
+        }
+    }
+
+    fun showSubMenuList(showList: Boolean, listTitle: String, indexTitle: String) {
+        when (showList) {
+            false -> {
+                if (listTitle == indexTitle) {
+                    val newSubMenuList = Pair(false, listTitle)
+                    _showingSubMenusList.value = newSubMenuList
+                } else {
+                    val newSubMenuList = Pair(true, listTitle)
+                    _showingSubMenusList.value = newSubMenuList
+                }
+            }
+            true -> {
+                if (listTitle == indexTitle) {
+                    val newSubMenuList = Pair(true, listTitle)
+                    _showingSubMenusList.value = newSubMenuList
+                } else {
+                    val newSubMenuList = Pair(true, listTitle)
+                    _showingSubMenusList.value = newSubMenuList
+                }
+            }
+        }
     }
 
     fun showDrawSheet() {
@@ -51,77 +108,17 @@ class BackgroundImageVM : ViewModel() {
     fun <T> selectBrand(type: ViewOneViewType, selectedBrand: T) {
         when (type) {
             ViewOneViewType.MainView -> {
-                _brandsList.value = _brandsList.value
+                _headerIconsList.value = _headerIconsList.value
                     .filter { it != selectedBrand }
                     .toMutableList()
-                    .apply { add(0, selectedBrand as Pair<String, Int>) }
+                    .apply { add(0, selectedBrand as String) }
             }
             ViewOneViewType.MenuView -> {
                 _mainMenuList.value = _mainMenuList.value
                     .filter { it != selectedBrand }
                     .toMutableList()
-                    .apply { add(0, selectedBrand as Pair<String, ImageVector>) }
+                    .apply { add(0, selectedBrand as Pair<String, String>) }
             }
-        }
-    }
-
-    fun changeBrandList(iconName: String) {
-        when (iconName) {
-            Icons.Outlined.Menu.name -> {
-
-            } // Side Menu
-
-            Icons.Outlined.ShoppingBag.name -> {
-                _brandsList.value = fashionList
-            } // Fashion and Accessories
-
-            Icons.Outlined.Diamond.name  -> {
-                _brandsList.value = watchesJewelryList
-            } // Watches and Jewelry
-
-            Icons.Outlined.DirectionsCar.name -> {
-                _brandsList.value = automobilesList
-            } // Automobiles
-
-            Icons.Outlined.Palette.name -> {
-                _brandsList.value = artCollectiblesList
-            } // Art & Collectibles
-
-            Icons.Outlined.FlightTakeoff.name -> {
-                _brandsList.value = internationalAirportsList
-            } // International Airports
-
-            Icons.Outlined.FlightLand.name -> {
-                _brandsList.value = airportHotelsList
-            } // Airport Hotels
-
-            Icons.Outlined.LocationCity.name -> {
-                _brandsList.value = cityHotelsResortsList
-            } // City Hotels and Resorts
-
-            Icons.Outlined.BeachAccess.name -> {
-                _brandsList.value = summerHotelsResortsList
-            } // Summer Hotels and Resorts
-
-            Icons.Outlined.AcUnit.name -> {
-                _brandsList.value = winterHotelsResortsList
-            } // Winter Hotels and Resorts
-
-            Icons.Outlined.DirectionsBoat.name -> {
-                _brandsList.value = yachtingBoatingList
-            } // Yachting and Boating
-
-            Icons.Outlined.Sailing.name -> {
-                _brandsList.value = yachtingClubsMarianasList
-            } // Yacht Clubs and Marianas
-
-            Icons.Outlined.Spa.name -> {
-                _brandsList.value = spaWellnessRetreatsList
-            } // Spas and Wellness Retreat
-
-            Icons.Outlined.RealEstateAgent.name -> {
-                _brandsList.value = realEstateList
-            } // Real Estate
         }
     }
 }

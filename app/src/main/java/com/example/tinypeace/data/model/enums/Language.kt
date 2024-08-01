@@ -1,7 +1,8 @@
 package com.example.tinypeace.model.enums
 
 enum class Language(val emoji: String, val description: String) {
-    ENGLISH("🇬🇧", "English"),
+    ENGLISH("🇬🇧", "English (UK)"),
+    AMERICAN("🇺🇸", "English"),
     SPANISH("🇪🇸", "Spanish"),
     CHINESE("🇨🇳", "Chinese"),
     HINDI("🇮🇳", "Hindi"),
@@ -31,4 +32,5 @@ enum class Language(val emoji: String, val description: String) {
     DANISH("🇩🇰", "Danish"),
     FINNISH("🇫🇮", "Finnish"),
     NORWEGIAN("🇳🇴", "Norwegian"),
+    Other("Other", "Other")
 }

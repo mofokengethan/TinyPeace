@@ -8,6 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import com.example.tinypeace.TinyPeaceUI.tinyPeaceData.cardData.enums.TinyPeaceCardType
 
 @Composable
@@ -45,7 +46,7 @@ fun TP_Cards(
                 modifier = modifier,
                 shape = CardDefaults.shape,
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    containerColor = Color.White,
                 ),
                 elevation = CardDefaults.outlinedCardElevation(),
                 border = CardDefaults.outlinedCardBorder(),

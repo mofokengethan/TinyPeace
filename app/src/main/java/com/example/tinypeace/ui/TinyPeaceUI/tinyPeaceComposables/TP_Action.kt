@@ -38,9 +38,10 @@ class ActionModel(
 
 @Composable
 fun TP_Action(
-    model: ActionModel
+    model: ActionModel,
+    isChecked: Boolean,
 ) {
-    val checked by remember { mutableStateOf(true) }
+    val checked by remember { mutableStateOf(isChecked) }
     val interactionSource = remember { MutableInteractionSource() }
     val scope = rememberCoroutineScope()
 

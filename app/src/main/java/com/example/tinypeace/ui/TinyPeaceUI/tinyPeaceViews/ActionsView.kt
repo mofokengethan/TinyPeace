@@ -29,7 +29,8 @@ fun ActionsView() {
             hasSwitchIcon = null,
             interaction = TinyPeaceInteractionModel(
                 tpOnClick = {}
-            ))
+            )), 
+            isChecked = true
         )
         TP_Action(model = ActionModel(
             type = TinyPeaceSmallComponentEnum.Checkbox,
@@ -38,7 +39,8 @@ fun ActionsView() {
             hasSwitchIcon = null,
             interaction = TinyPeaceInteractionModel(
                 tpOnCheckChange = {}
-            ))
+            )),
+            isChecked = true
         )
         TP_Action(model = ActionModel(
             type = TinyPeaceSmallComponentEnum.Switch,
@@ -47,7 +49,8 @@ fun ActionsView() {
             hasSwitchIcon = null,
             interaction = TinyPeaceInteractionModel(
                 tpOnCheckChange = {}
-            ))
+            )),
+            isChecked = true
         )
         TP_Action(model = ActionModel(
             type = TinyPeaceSmallComponentEnum.Switch,
@@ -63,7 +66,8 @@ fun ActionsView() {
             )),
             interaction = TinyPeaceInteractionModel(
                 tpOnCheckChange = {}
-            ))
+            )),
+            isChecked = true
         )
     }
 }

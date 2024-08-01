@@ -86,5 +86,6 @@ enum class Nationality(val emoji: String, val description: String) {
     VINCENTIAN("🇻🇨", "Vincentian"),
     ANTIGUAN_BARBUDAN("🇦🇬", "Antiguan/Barbudan"),
     SAINT_KITTS_NEVISIAN("🇰🇳", "Saint Kitts and Nevisian"),
-    DOMINICAN("🇩🇲", "Dominican")
+    DOMINICAN("🇩🇲", "Dominican"),
+    Other("Other", "Other")
 }

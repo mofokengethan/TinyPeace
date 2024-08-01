@@ -21,8 +21,7 @@ class MainActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun Preview() {
-        // UI Preview
-        // UIPreview()
+        MainAppScreen()
 }
 
 
